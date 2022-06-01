@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "deLilleStudy",
+    "slug": "deLilleStudy",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
