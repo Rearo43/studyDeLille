@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Text } from '@ui-kitten/components';
+import React, {useState} from 'react';
+import {Autocomplete, Text} from '@ui-kitten/components';
 import {
   StyleSheet,
   View,
@@ -9,58 +9,96 @@ import {
   Modal,
   Dimensions,
 } from 'react-native';
-import { Card, ListItem, Button } from 'react-native-elements';
+import {Card, ListItem, Button, Divider} from 'react-native-elements';
 
-function Wines({ arr }) {
+function Wines({x}) {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [moreInfo, setMoreInfo] = useState('ERROR!');
+  return (
+    <View>
+      <View style={styles.centeredView}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+            setModalVisible(!modalVisible);
+          }}>
+          <View>
+            <View style={styles.modalView}>
+              <Text>Wine Summary</Text>
+              {/* If I want to switch to using button to go back move open Pressable tag down above Text Back "button" */}
+              <Pressable
+                style={[styles.button]}
+                onPress={() => setModalVisible(!modalVisible)}>
+                <Text>Columbia Valley AVA</Text>
+                <Divider inset={true} insetType='middle'/>
+                <Text>
+                  Pairings: Seafood, grilled salmon, fried calamari, shellfish,
+                  seared tuna
+                </Text>
+                <Text>
+                  Tasting Notes: Watermelon, jolly rancher, passion fruit,
+                  nectarine, orange blossom
+                </Text>
+                <Text>{moreInfo}</Text>
+                <Text></Text>
+                <Text style={styles.buttonClose}>Back</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+      </View>
+
+      <View>
+        {x.map(y => (
+          <View style={styles.centeredView}>
+            <Card key={y.name}>
+              <Card.Title>{y.name}</Card.Title>
+              <Card.Divider />
+              <Text>{y.qs}</Text>
+              <Pressable
+                onPress={() => {
+                    setMoreInfo(y.name);
+                    setModalVisible(true);
+                }}
+                style={styles.try}>
+                <Text style={[styles.buttonOpen, styles.boxShadow]}>
+                  More Info
+                </Text>
+                {/* If I can get linear gradient to work this is the button I would like to use */}
+                {/* <View style={[styles.iconParent, styles.shadowProp]}>
+                <Text style={styles.icon}>+</Text>
+              </View> */}
+              </Pressable>
+            </Card>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+}
+
+function Cards({x}) {
   const [modalVisible, setModalVisible] = useState(false);
   return (
     <View>
-      {arr.map((x) => (
+      {x.map(y => (
         <View style={styles.centeredView}>
-          <Modal
-            animationType='slide'
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              Alert.alert('Modal has been closed.');
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <View>
-              <View style={styles.modalView}>
-                <Text>Wine Summary</Text>
-                {/* If I want to switch to using button to go back move open Pressable tag down above Text Back "button" */}
-                <Pressable
-                  style={[styles.button]}
-                  onPress={() => setModalVisible(!modalVisible)}
-                >
-                  <Text>Columbia Valley AVA</Text>
-                  <Text>{x.name}</Text>
-                  <Text>
-                    Pairings: Seafood, grilled salmon, fried calamari,
-                    shellfish, seared tuna
-                  </Text>
-                  <Text>
-                    Tasting Notes: Watermelon, jolly rancher, passion fruit,
-                    nectarine, orange blossom
-                  </Text>
-                  <Text></Text>
-                  <Text style={styles.buttonClose}>Back</Text>
-                </Pressable>
-              </View>
-            </View>
-          </Modal>
-          <Card key={x.name}>
-            {/* <Text style={styles.card}>
-              <Icon reverse name='ios-american-football' color='#517fa4' />
-            </Text> */}
-            <Card.Title>{x.name}</Card.Title>
+          <Card key={y.name}>
+            <Card.Title>{y.name}</Card.Title>
             <Card.Divider />
-            <Text>{x.qs}</Text>
+            <Text>{y.qs}</Text>
             <Pressable onPress={() => setModalVisible(true)} style={styles.try}>
-              <Text style={[styles.buttonOpen, styles.boxShadow]}>
+              <Text
+                style={[styles.buttonOpen, styles.boxShadow]}>
                 More Info
               </Text>
+              {/* If I can get linear gradient to work this is the button I would like to use */}
+              {/* <View style={[styles.iconParent, styles.shadowProp]}>
+                <Text style={styles.icon}>+</Text>
+              </View> */}
             </Pressable>
           </Card>
         </View>
@@ -72,17 +110,39 @@ function Wines({ arr }) {
 export const Final = () => {
   return (
     <ScrollView>
-      <Wines arr={data} />
+      <Wines x={data} />
     </ScrollView>
   );
 };
 const height = Dimensions.get('window').height * 0.5;
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: 'yellow',
+  iconParent: {
+    marginLeft: '85%',
+    width: 50,
+    height: 50,
+    backgroundColor: 'grey',
+    borderRadius: 50,
+    // shadowColor: 'black',
+    // shadowOffset: {width: 17, height: 17},
   },
+  shadowProp: {
+    shadowColor: '#171717',
+    shadowOffset: {width: -2, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  icon: {
+    fontWeight: '200',
+    fontSize: 50,
+    lineHeight: 50,
+    textAlign: 'center',
+  },
+
+  //   background: linear-gradient(145deg, #FFFFFF, #C4C6C7);
+  // border-radius: 100%;
+  // box-shadow: inset 17.42px 17.42px 24px #D6D8DA, inset -17.42px -17.42px 24px #FFFFFF;
   button: {
-    borderRadius: 0,
+    borderRadius: 50,
     marginLeft: 0,
     marginRight: 0,
     marginBottom: 0,
@@ -95,13 +155,13 @@ const styles = StyleSheet.create({
   },
   modalView: {
     marginTop: height,
-    backgroundColor: 'yellow',
+    backgroundColor: 'green',
     borderRadius: 20,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOpacity: 0.25,
     height: height,
-    borderTopLeftRadius: 20,
+    // borderTopLeftRadius: 0,
   },
   button: {
     padding: 10,
@@ -112,7 +172,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   boxShadow: {
-    shadowOffset: { width: 5, height: 2 },
+    shadowOffset: {width: 5, height: 2},
     shadowOpacity: 0.5,
     width: '50%',
     marginLeft: '25%',
@@ -154,3 +214,17 @@ const data = [
     qs: "Harrison Hill is a crowd favorite here. Harrison Hill Vineyard is actually on Snipes Mountain the second smallest AVA in Washington in front of Red Mountain. They have some of the oldest Cab vines in Washington planted in '62. Having access to these particular grapes gives this wine elegance with such a smooth almost silky finish.",
   },
 ];
+
+// ------------- .json layout
+    // {
+    //   "name": "",
+    //   "qs": "",
+    //   "ava": "",
+    //   "varietal": "",
+    //   "vineyard": "",
+    //   "pairings": "",
+    //   "rating": "",
+    //   "tastingNotes": ""
+
+    // },
+
